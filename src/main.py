@@ -19,9 +19,9 @@ tf.app.flags.DEFINE_float("dropout", 0.2, "Fraction of units randomly dropped on
 tf.app.flags.DEFINE_integer("top_probabilities",2,"Number of probabilities to sample from")
 tf.app.flags.DEFINE_integer("max_gradient_norm", 5, "level to clip gradients")
 
-tf.app.flags.DEFINE_integer("print_every", 100, "How many iterations to do per print.")
+tf.app.flags.DEFINE_integer("print_every", 1, "How many iterations to do per print.")
 tf.app.flags.DEFINE_integer("keep", 1, "How many checkpoints to keep. 0 indicates keep all (you shouldn't need to do keep all though - it's very storage intensive).")
-tf.app.flags.DEFINE_integer("save_every", 100, "How many iterations to do per save.")
+tf.app.flags.DEFINE_integer("save_every", 5, "How many iterations to do per save.")
 
 FLAGS = tf.app.flags.FLAGS
 os.environ["CUDA_VISIBLE_DEVICES"] = str(FLAGS.gpu)
@@ -57,52 +57,52 @@ with tf.Session(config=config) as sess:
         while model.FLAGS.num_epochs == 0 or epoch <= model.FLAGS.num_epochs:
             print("Running epoch %s" % (epoch))
             loss_per_batch, batch_lengths, accuracy_per_batch = [], [], []
-            count = 0
             for char_ids,char_labels in model.dataObject.generate_one_epoch(FLAGS.batch_size,FLAGS.sequence_length,epoch):
-                count+=1
                 input_dict={
                     model.character_ids:char_ids,
                     model.character_label:char_labels,
                     model.keep_prob:1.0-FLAGS.dropout,
                     model.hidden_state:istate,
                 }
-                _, loss, accuracy, prediction, istate = sess.run([model.train_step, model.loss_mean, model.accuracy, model.prediction, model.hidden_state],feed_dict=input_dict)
+                _, loss, accuracy, prediction, istate = sess.run([model.train_step, model.loss_mean, model.accuracy, model.prediction, model.final_state],feed_dict=input_dict)
                 loss_per_batch.append(loss * char_ids.shape[0])
                 batch_lengths.append(char_ids.shape[0])
                 accuracy_per_batch.append(accuracy * char_ids.shape[0])
-                if count % model.FLAGS.print_every == 0:
-                    print("batch loss, accuracy %s %s" % (loss, accuracy))
-                    for i in range(1):
-                        sentence = ''.join([id2char[x] for x in char_labels[-i, :].tolist()])
-                        predicted = ''.join([id2char[x] for x in prediction[-i, :].tolist()])
-                        print(sentence)
-                        print("--------")
-                        print(predicted)
-                        print("##############")
-                if count % model.FLAGS.save_every == 0:
-                    total_examples = float(sum(batch_lengths))
-                    train_loss = sum(loss_per_batch) / total_examples
-                    train_accuracy = sum(accuracy_per_batch) / total_examples
-                    print("Train Loss: %s" % (train_loss))
-                    print("Train Accuracy %s" % (train_accuracy))
-                    model.saver.save(sess, model.FLAGS.save_path + "CharacterLanguageModel")
             epoch+=1
+            if epoch % model.FLAGS.print_every == 0:
+                for i in range(1):
+                    sentence = ''.join([id2char[x] for x in char_labels[-i, :].tolist()])
+                    predicted = ''.join([id2char[x] for x in prediction[-i, :].tolist()])
+                    print(sentence)
+                    print("--------")
+                    print(predicted)
+                    print("##############")
+            if epoch % model.FLAGS.save_every == 0:
+                total_examples = float(sum(batch_lengths))
+                train_loss = sum(loss_per_batch) / total_examples
+                train_accuracy = sum(accuracy_per_batch) / total_examples
+                print("Train Loss: %s" % (train_loss))
+                print("Train Accuracy %s" % (train_accuracy))
+                model.saver.save(sess, model.FLAGS.save_path + "CharacterLanguageModel")
     else:
         print("Demo mode")
         sTemp=''
         char_ids=np.array([[model.dataObject.char2id['L']]])
         istate = np.zeros([1, FLAGS.hidden_size * FLAGS.num_layers])  # initial zero input state
+        count=0
         while True:
             input_dict={
                 model.character_ids:char_ids,
                 model.keep_prob:1.0,
                 model.hidden_state:istate,
             }
-            probs,istate=sess.run([model.probabilities,model.hidden_state],feed_dict=input_dict)
+            probs,istate=sess.run([model.probabilities,model.final_state],feed_dict=input_dict)
             p=np.squeeze(probs)
             p[np.argsort(p)[:-FLAGS.top_probabilities]] = 0
             p = p / np.sum(p)
             char_ids=np.random.choice(model.dataObject.ALPHASIZE,1,p=p)[0]
-            sTemp += id2char[char_ids]
-            print(sTemp)
+            print(id2char[char_ids],end="")
+            count+=1
+            if count%100==0:
+                print("")
             char_ids=np.array([[char_ids]])

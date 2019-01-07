@@ -49,8 +49,8 @@ class LSTMCharacterModel(object):
         dropcells=[tf.contrib.rnn.DropoutWrapper(cell,input_keep_prob=self.keep_prob) for cell in cells]
         multicell=tf.contrib.rnn.MultiRNNCell(dropcells,state_is_tuple=False)
         multicell=tf.contrib.rnn.DropoutWrapper(multicell,output_keep_prob=self.keep_prob)  # dropout for the softmax layer
-        outputs,final_state=tf.nn.dynamic_rnn(cell=multicell,inputs=self.character_one_hot,dtype=tf.float32,initial_state=self.hidden_state)
-        self.final_state=tf.identity(final_state, name='final_state')
+        outputs,self.final_state=tf.nn.dynamic_rnn(cell=multicell,inputs=self.character_one_hot,dtype=tf.float32,initial_state=self.hidden_state)
+        self.final_state=tf.identity(self.final_state, name='final_state')
         final_output = tf.contrib.layers.fully_connected(outputs, num_outputs=self.dataObject.ALPHASIZE,activation_fn=None)  # [batch_size,seq_len,num_chars]
         self.logits = tf.identity(final_output, name='logits')  # [batch_size,seq_len,num_chars]
 
