@@ -6,8 +6,10 @@ from src.LSTMCharacterModel import LSTMCharacterModel
 tf.app.flags.DEFINE_integer("gpu", 1, "Which GPU to use, if you have multiple.")
 tf.app.flags.DEFINE_string("mode", "train", "Available modes: train / demo")
 tf.app.flags.DEFINE_string("save_path", '../experiments/', "path and name to save the model at")
-tf.app.flags.DEFINE_integer("num_epochs", 200, "Number of epochs to train. 0 means train indefinitely")
+tf.app.flags.DEFINE_integer("num_epochs", 0, "Number of epochs to train. 0 means train indefinitely")
 
+#tf.app.flags.DEFINE_string("file_path","c:\\Users\\tihor\\Downloads\\tensorflow-rnn-shakespeare-master\\shakespeare","path to shakespeare files")
+tf.app.flags.DEFINE_string("file_path","/home/rohitapte/Desktop/tensorflow-rnn-shakespeare-master/shakespeare","path to shakespeare files")
 tf.app.flags.DEFINE_float("learning_rate", 0.001, "Learning rate.")
 tf.app.flags.DEFINE_integer("batch_size", 200, "Batch size to use")
 tf.app.flags.DEFINE_integer("sequence_length", 30, "Sequence length")
@@ -17,7 +19,7 @@ tf.app.flags.DEFINE_float("dropout", 0.2, "Fraction of units randomly dropped on
 
 tf.app.flags.DEFINE_integer("print_every", 100, "How many iterations to do per print.")
 tf.app.flags.DEFINE_integer("keep", 1, "How many checkpoints to keep. 0 indicates keep all (you shouldn't need to do keep all though - it's very storage intensive).")
-tf.app.flags.DEFINE_integer("save_every", 1000, "How many iterations to do per save.")
+tf.app.flags.DEFINE_integer("save_every", 100, "How many iterations to do per save.")
 
 FLAGS = tf.app.flags.FLAGS
 os.environ["CUDA_VISIBLE_DEVICES"] = str(FLAGS.gpu)

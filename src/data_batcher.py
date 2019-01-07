@@ -2,7 +2,7 @@ import numpy as np
 import os
 
 class LSTMDataObject(object):
-    def __init__(self):
+    def __init__(self,filepath):
         self.UNK='_UNK_'
         self.UNK_ID=0
         self.char2id={}
@@ -15,7 +15,7 @@ class LSTMDataObject(object):
         self.id2char={}
         for item in self.char2id:
             self.id2char[self.char2id[item]]=item
-        self.read_data_files("c:\\Users\\tihor\\Downloads\\tensorflow-rnn-shakespeare-master\\shakespeare")
+        self.read_data_files(filepath)
 
     def encode_text(self,text):
         return [self.char2id.get(item,self.UNK_ID) for item in list(text)]

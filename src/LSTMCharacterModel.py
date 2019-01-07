@@ -8,7 +8,7 @@ class LSTMCharacterModel(object):
     def __init__(self,FLAGS,name='LSTMCharacterModel'):
         self.FLAGS=FLAGS
         self.name=name
-        self.dataObject=LSTMDataObject()
+        self.dataObject=LSTMDataObject(FLAGS.file_path)
 
         self.add_placeholders()
         self.add_embedding_layer()
@@ -23,8 +23,8 @@ class LSTMCharacterModel(object):
         self.saver = tf.train.Saver(tf.global_variables(), max_to_keep=self.FLAGS.keep)
 
     def add_placeholders(self):
-        self.character_ids=tf.placeholder(tf.int32,shape=[None,self.FLAGS.sequence_length])
-        self.character_label=tf.placeholder(tf.int32,shape=[None,self.FLAGS.sequence_length])
+        self.character_ids=tf.placeholder(tf.int32,shape=[None,None])
+        self.character_label=tf.placeholder(tf.int32,shape=[None,None])
         self.keep_prob=tf.placeholder_with_default(1.0,shape=())
         self.hidden_state=tf.placeholder(tf.float32,[None,self.FLAGS.hidden_size*self.FLAGS.num_layers],name='HiddenState')
 
