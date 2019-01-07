@@ -17,6 +17,7 @@ tf.app.flags.DEFINE_integer("num_layers",3, "Number of layers in LSTM")
 tf.app.flags.DEFINE_integer("hidden_size", 512, "Size of the hidden states")
 tf.app.flags.DEFINE_float("dropout", 0.2, "Fraction of units randomly dropped on non-recurrent connections.")
 tf.app.flags.DEFINE_integer("top_probabilities",2,"Number of probabilities to sample from")
+tf.app.flags.DEFINE_integer("max_gradient_norm", 5, "level to clip gradients")
 
 tf.app.flags.DEFINE_integer("print_every", 100, "How many iterations to do per print.")
 tf.app.flags.DEFINE_integer("keep", 1, "How many checkpoints to keep. 0 indicates keep all (you shouldn't need to do keep all though - it's very storage intensive).")
@@ -88,6 +89,7 @@ with tf.Session(config=config) as sess:
             epoch+=1
     else:
         print("Demo mode")
+        sTemp=''
         char_ids=np.array([[model.dataObject.char2id['L']]])
         istate = np.zeros([1, FLAGS.hidden_size * FLAGS.num_layers])  # initial zero input state
         while True:
@@ -101,4 +103,6 @@ with tf.Session(config=config) as sess:
             p[np.argsort(p)[:-FLAGS.top_probabilities]] = 0
             p = p / np.sum(p)
             char_ids=np.random.choice(model.dataObject.ALPHASIZE,1,p=p)[0]
+            sTemp += id2char[char_ids]
+            print(sTemp)
             char_ids=np.array([[char_ids]])

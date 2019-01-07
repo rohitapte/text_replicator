@@ -15,8 +15,19 @@ class LSTMCharacterModel(object):
         self.build_graph()
         self.add_loss()
 
+        #opt = tf.train.AdamOptimizer(learning_rate=FLAGS.learning_rate)  # you can try other optimizers
+        #self.train_step=opt.minimize(self.loss_mean)
+        params = tf.trainable_variables()
+        gradients = tf.gradients(self.loss, params)
+        self.gradient_norm = tf.global_norm(gradients)
+        clipped_gradients, _ = tf.clip_by_global_norm(gradients, FLAGS.max_gradient_norm)
+        self.param_norm = tf.global_norm(params)
+
+        # Define optimizer and updates
+        # (updates is what you need to fetch in session.run to do a gradient update)
+        self.global_step = tf.Variable(0, name="global_step", trainable=False)
         opt = tf.train.AdamOptimizer(learning_rate=FLAGS.learning_rate)  # you can try other optimizers
-        self.train_step=opt.minimize(self.loss_mean)
+        self.train_step = opt.apply_gradients(zip(clipped_gradients, params), global_step=self.global_step)
 
         self.add_predictions()
 
