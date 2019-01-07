@@ -9,11 +9,6 @@ tf.app.flags.DEFINE_string("save_path", '../experiments/', "path and name to sav
 tf.app.flags.DEFINE_integer("num_epochs", 200, "Number of epochs to train. 0 means train indefinitely")
 
 tf.app.flags.DEFINE_float("learning_rate", 0.001, "Learning rate.")
-tf.app.flags.DEFINE_string("train_file_path","../test_text/training_data.txt","Path to the training file")
-#tf.app.flags.DEFINE_string("val_file_path","../test_text/cv_text.txt","Path to the dev file")
-#tf.app.flags.DEFINE_string("train_file_path","../char_sequences.txt","Path to the training file")
-#tf.app.flags.DEFINE_string("val_file_path","../char_sequences_val.txt","Path to the dev file")
-tf.app.flags.DEFINE_string("test_file_path","../test_text/test_text.txt","Path to the test file")
 tf.app.flags.DEFINE_integer("batch_size", 200, "Batch size to use")
 tf.app.flags.DEFINE_integer("sequence_length", 30, "Sequence length")
 tf.app.flags.DEFINE_integer("num_layers",3, "Number of layers in LSTM")
