@@ -16,6 +16,7 @@ tf.app.flags.DEFINE_integer("sequence_length", 30, "Sequence length")
 tf.app.flags.DEFINE_integer("num_layers",3, "Number of layers in LSTM")
 tf.app.flags.DEFINE_integer("hidden_size", 512, "Size of the hidden states")
 tf.app.flags.DEFINE_float("dropout", 0.2, "Fraction of units randomly dropped on non-recurrent connections.")
+tf.app.flags.DEFINE_integer("top_probabilities",2,"Number of probabilities to sample from")
 
 tf.app.flags.DEFINE_integer("print_every", 100, "How many iterations to do per print.")
 tf.app.flags.DEFINE_integer("keep", 1, "How many checkpoints to keep. 0 indicates keep all (you shouldn't need to do keep all though - it's very storage intensive).")
@@ -96,3 +97,8 @@ with tf.Session(config=config) as sess:
                 model.hidden_state:istate,
             }
             probs,istate=sess.run([model.probabilities,model.hidden_state],feed_dict=input_dict)
+            p=np.squeeze(probs)
+            p[np.argsort(p)[:-FLAGS.top_probabilities]] = 0
+            p = p / np.sum(p)
+            char_ids=np.random.choice(model.dataObject.ALPHASIZE,1,p=p)[0]
+            char_ids=np.array([[char_ids]])

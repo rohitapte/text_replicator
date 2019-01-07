@@ -44,7 +44,7 @@ class LSTMCharacterModel(object):
         self.logits = tf.identity(final_output, name='logits')  # [batch_size,seq_len,num_chars]
 
     def add_loss(self):
-        self.loss = tf.nn.softmax_cross_entropy_with_logits_v2(labels=self.character_one_hot,logits=self.logits)  # batch_size,seq_len
+        self.loss = tf.nn.softmax_cross_entropy_with_logits_v2(labels=self.labels_one_hot,logits=self.logits)  # batch_size,seq_len
         self.loss_mean = tf.reduce_mean(self.loss)  # batch_size
 
     def add_predictions(self):
