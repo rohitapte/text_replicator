@@ -5,14 +5,14 @@ from src.LSTMCharacterModel import LSTMCharacterModel
 
 tf.app.flags.DEFINE_integer("gpu", 1, "Which GPU to use, if you have multiple.")
 tf.app.flags.DEFINE_string("mode", "train", "Available modes: train / demo")
-tf.app.flags.DEFINE_string("save_path", 'experiments/', "path and name to save the model at")
+tf.app.flags.DEFINE_string("save_path", '../experiments/', "path and name to save the model at")
 tf.app.flags.DEFINE_integer("num_epochs", 0, "Number of epochs to train. 0 means train indefinitely")
 
-tf.app.flags.DEFINE_string("file_path","aesop","path to txt files")
-tf.app.flags.DEFINE_integer("batch_size", 2, "Batch size to use")
+#tf.app.flags.DEFINE_string("file_path","../aesop","path to txt files")
+#tf.app.flags.DEFINE_integer("batch_size", 2, "Batch size to use")
 
-#tf.app.flags.DEFINE_string("file_path","shakespeare","path to txt files")
-#tf.app.flags.DEFINE_integer("batch_size", 200, "Batch size to use")
+tf.app.flags.DEFINE_string("file_path","../shakespeare","path to txt files")
+tf.app.flags.DEFINE_integer("batch_size", 200, "Batch size to use")
 tf.app.flags.DEFINE_float("learning_rate", 0.001, "Learning rate.")
 
 tf.app.flags.DEFINE_integer("sequence_length", 30, "Sequence length")
