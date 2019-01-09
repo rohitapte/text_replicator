@@ -9,9 +9,12 @@ tf.app.flags.DEFINE_string("save_path", 'experiments/', "path and name to save t
 tf.app.flags.DEFINE_integer("num_epochs", 0, "Number of epochs to train. 0 means train indefinitely")
 
 tf.app.flags.DEFINE_string("file_path","aesop","path to txt files")
-#tf.app.flags.DEFINE_string("file_path","/home/rohitapte/Desktop/tensorflow-rnn-shakespeare-master/shakespeare","path to shakespeare files")
+tf.app.flags.DEFINE_integer("batch_size", 2, "Batch size to use")
+
+#tf.app.flags.DEFINE_string("file_path","shakespeare","path to txt files")
+#tf.app.flags.DEFINE_integer("batch_size", 200, "Batch size to use")
 tf.app.flags.DEFINE_float("learning_rate", 0.001, "Learning rate.")
-tf.app.flags.DEFINE_integer("batch_size", 20, "Batch size to use")
+
 tf.app.flags.DEFINE_integer("sequence_length", 30, "Sequence length")
 tf.app.flags.DEFINE_integer("num_layers",3, "Number of layers in LSTM")
 tf.app.flags.DEFINE_integer("hidden_size", 512, "Size of the hidden states")
