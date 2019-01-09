@@ -31,6 +31,7 @@ class LSTMDataObject(object):
                 with open(filename,'r') as f:
                     text=f.read()
                     self.encoded_text.extend(self.encode_text(text))
+        print("Length of data: "+str(len(self.encoded_text)))
 
     def generate_one_epoch(self,batch_size,sequence_length,epoch_number):
         data=np.array(self.encoded_text)
