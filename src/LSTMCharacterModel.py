@@ -1,6 +1,6 @@
 from __future__ import absolute_import
 from __future__ import division
-from src.data_batcher import LSTMDataObject
+from data_batcher import LSTMDataObject
 import tensorflow as tf
 from tensorflow.python.ops import variable_scope as vs
 
