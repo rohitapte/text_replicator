@@ -1,5 +1,4 @@
-# text_replicator
-##Teaching RNNs to replicate text
+#Teaching RNNs to replicate text
 This code is an adaptation of Andrej Karpathy's [The unreasonable effectiveness of Recurrent Neural Networks](http://karpathy.github.io/2015/05/21/rnn-effectiveness/).<br>
 It uses tensorflow with multi layer GRUs and gradient clipping. The model can be set to run continuously (num_epochs=0), and saves the model to file if it finds a better result. Restarting the model will also automatically pick up from where it left off.<br>
 
