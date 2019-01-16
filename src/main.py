@@ -1,12 +1,12 @@
 import tensorflow as tf
 import os
 import numpy as np
-from src.LSTMCharacterModel import LSTMCharacterModel
+from LSTMCharacterModel import LSTMCharacterModel
 
 tf.app.flags.DEFINE_integer("gpu", 1, "Which GPU to use, if you have multiple.")
 tf.app.flags.DEFINE_string("mode", "train", "Available modes: train / demo")
 tf.app.flags.DEFINE_string("save_path", '../experiments/', "path and name to save the model at")
-tf.app.flags.DEFINE_integer("num_epochs", 0, "Number of epochs to train. 0 means train indefinitely")
+tf.app.flags.DEFINE_integer("num_epochs", 30, "Number of epochs to train. 0 means train indefinitely")
 
 #tf.app.flags.DEFINE_string("file_path","../aesop","path to txt files")
 #tf.app.flags.DEFINE_integer("batch_size", 2, "Batch size to use")
@@ -51,7 +51,7 @@ def initialize_model(sess,model,expectExists=False):
             print("No model found. initializing from scratch")
             sess.run(tf.global_variables_initializer())
             print('Num params: %d' % sum(v.get_shape().num_elements() for v in tf.trainable_variables()))
-
+worst_loss=1000
 with tf.Session(config=config) as sess:
     initialize_model(sess=sess, model=model, expectExists=False)
     if model.FLAGS.mode == 'train':
@@ -87,7 +87,10 @@ with tf.Session(config=config) as sess:
                 train_accuracy = sum(accuracy_per_batch) / total_examples
                 print("Train Loss: %s" % (train_loss))
                 print("Train Accuracy %s" % (train_accuracy))
-                model.saver.save(sess, model.FLAGS.save_path + "CharacterLanguageModel")
+                if train_loss<worst_loss:
+                    worst_loss=train_loss
+                    print("Found better model... saving")
+                    model.saver.save(sess, model.FLAGS.save_path + "CharacterLanguageModel")
             if epoch % model.FLAGS.show_every==0:
                 print("Sample text \n")
                 char_ids = np.array([[model.dataObject.char2id['L']]])
