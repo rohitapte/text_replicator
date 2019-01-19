@@ -6,12 +6,14 @@ from LSTMCharacterModel import LSTMCharacterModel
 tf.app.flags.DEFINE_integer("gpu", 1, "Which GPU to use, if you have multiple.")
 tf.app.flags.DEFINE_string("mode", "train", "Available modes: train / demo")
 tf.app.flags.DEFINE_string("save_path", '../experiments/', "path and name to save the model at")
-tf.app.flags.DEFINE_integer("num_epochs", 30, "Number of epochs to train. 0 means train indefinitely")
+tf.app.flags.DEFINE_integer("num_epochs", 60, "Number of epochs to train. 0 means train indefinitely")
 
-#tf.app.flags.DEFINE_string("file_path","../aesop","path to txt files")
+
+tf.app.flags.DEFINE_string("file_path","../aesop","path to txt files")
 #tf.app.flags.DEFINE_integer("batch_size", 2, "Batch size to use")
 
-tf.app.flags.DEFINE_string("file_path","../shakespeare","path to txt files")
+#tf.app.flags.DEFINE_string("file_path","../paulgraham","path to txt files")
+#tf.app.flags.DEFINE_string("file_path","../shakespeare","path to txt files")
 tf.app.flags.DEFINE_integer("batch_size", 200, "Batch size to use")
 tf.app.flags.DEFINE_float("learning_rate", 0.001, "Learning rate.")
 
@@ -96,7 +98,7 @@ with tf.Session(config=config) as sess:
                 char_ids = np.array([[model.dataObject.char2id['L']]])
                 demo_state = np.zeros([1, FLAGS.hidden_size * FLAGS.num_layers])  # initial zero input state
                 count = 0
-                while count<600:
+                while count<1000:
                     input_dict = {
                         model.character_ids: char_ids,
                         model.keep_prob: 1.0,

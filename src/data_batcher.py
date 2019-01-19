@@ -29,6 +29,7 @@ class LSTMDataObject(object):
             for file in files:
                 filename=os.path.join(root,file)
                 with open(filename,'r') as f:
+                    print(filename)
                     text=f.read()
                     self.encoded_text.extend(self.encode_text(text))
         print("Length of data: "+str(len(self.encoded_text)))
