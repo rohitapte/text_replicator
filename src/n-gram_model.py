@@ -56,7 +56,7 @@ def generateProbMatrix(text,ngram_size):
 
 NGRAM_SIZE=5
 print("reading data files...")
-text=read_data_files('../shakespeare')
+text=read_data_files('../paulgraham')
 preDict,markovDict,markovProbs=generateProbMatrix(text,NGRAM_SIZE)
 
 preList=[]
