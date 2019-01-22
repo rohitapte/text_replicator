@@ -15,3 +15,5 @@ and so on.... there are descriptions for each one.
 
 Usage: python main.py. arguments are passed as <br>
 --gpu=0 --mode=demo etc
+
+I also added n-gram_model.py that generates text using ngrams. Its nice to compare both speed and accuracy side by side. The code should be self explanatory.
