@@ -1,6 +1,7 @@
 import os
 from collections import defaultdict
 import numpy as np
+from tqdm import tqdm
 
 def read_data_files(directory):
     all_text=''
@@ -29,30 +30,34 @@ def generate_ngrams(text,n):
         preDict[item]/=total
     return ngramDict,preDict
 
-def markob_chain(preDict,ngramDict):
+def markov_chain(preDict,ngramDict):
     markovDict={}
     markovProbs={}
-    for item in preDict:
+    for key in preDict:
         subDict={}
         subList=[]
-        index=0
-        for subitem in ngramDict:
-            if subitem[1]==item:
-                subList.append(ngramDict[subitem]/preDict[item])
-                subDict[index]=subitem[0]
-                index+=1
-        markovDict[item]=subDict
-        markovProbs[item]=subList
+        markovDict[key]=subDict
+        markovProbs[key]=subList
+    for key,value in tqdm(ngramDict.items()):
+        subDict=markovDict[key[1]]
+        subList=markovProbs[key[1]]
+        subDict[len(subList)]=key[0]
+        subList.append(value/preDict[key[1]])
+        markovDict[key[1]]=subDict
+        markovProbs[key[1]]=subList
     return markovDict,markovProbs
 
-NGRAM_SIZE=10
+def generateProbMatrix(text,ngram_size):
+    print("generating "+str(ngram_size)+"-grams...")
+    ngramDict,preDict=generate_ngrams(text,ngram_size)
+    print("generating markov probabilities")
+    markovDict, markovProbs=markov_chain(preDict, ngramDict)
+    return preDict,markovDict, markovProbs
 
+NGRAM_SIZE=5
 print("reading data files...")
 text=read_data_files('../shakespeare')
-print("generating "+str(NGRAM_SIZE)+"-grams...")
-ngramDict,preDict=generate_ngrams(text,NGRAM_SIZE)
-print("generating markov probabilities")
-markovDict,markovProbs=markob_chain(preDict,ngramDict)
+preDict,markovDict,markovProbs=generateProbMatrix(text,NGRAM_SIZE)
 
 preList=[]
 indexToPre={}
